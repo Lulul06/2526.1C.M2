@@ -9,25 +9,13 @@ from arkanoid_core import *
 # Métodos a completar por el alumnado
 # --------------------------------------------------------------------- #
 
-#@arkanoid_method
-def cargar_nivel(self) -> list[str]:    #YOOOOOYOOOOO
+@arkanoid_method
+def cargar_nivel(self) -> list[str]:
     """Lee el fichero de nivel y devuelve la cuadrícula como lista de filas."""
-    ruta_fichero_nivel = self.level_path
-
-    if not ruta_fichero_nivel.is_file():
-        mensaje = f"No se encuentra el archivo: {ruta_fichero_nivel}"
-        print(mensaje)         # - Comprueba que `self.level_path` existe y es fichero.
-    with ruta_fichero_nivel.open("r", encoding="utf-8") as f:
-       texto_entero = f.read()   #Lee todo el contenido del archivo como una sola cadena y luego la divide
-       lineas = [linea.strip() for linea in texto_entero.splitlines() if linea.strip()]    #Obtiene las lineas sin espacios y separados por l
-       longitudes = [len(linea) for linea in lineas]    # Comprueba el ancho de las lineas
-       if len(set(longitudes)) > 1:   
-           raise ValueError("Las filas del nivel no tienen el mismo ancho")  
+    # - Comprueba que `self.level_path` existe y es fichero.
     # - Lee su contenido, filtra líneas vacías y valida que todas tienen el mismo ancho.
-    self.layout = lineas
-    return self.layout
     # - Guarda el resultado en `self.layout` y devuélvelo.
-   
+    raise NotImplementedError
 
 @arkanoid_method
 def preparar_entidades(self) -> None:
@@ -38,41 +26,12 @@ def preparar_entidades(self) -> None:
     raise NotImplementedError
 
 @arkanoid_method
-def crear_bloques(self) -> None:    #YOOOOOYOOOOO
+def crear_bloques(self) -> None:
     """Genera los rectángulos de los bloques en base a la cuadrícula."""
     # - Limpia `self.blocks`, `self.block_colors` y `self.block_symbols`.
-    self.blocks.clear(), self.block_colors.clear(), self.block_symbols.clear()
     # - Recorre `self.layout` para detectar símbolos de bloque.
-    fila = 0
-    for linea in self.layout:
-        columna, caracter = ""
-        fila += 1
-        for posicion, caracter in enumerate(linea, start=1):
-            columna = posicion
-            caracter = caracter
-        self.calcular_posicion_bloque(self)
-        if bloque == "#":
-            
-            self.blocks
-            self.block_colors = self.BLOCK_COLORS["@"]
-            self.block_symbols
-        elif bloque == "@":
-            self.blocks
-            self.block_colors == self.BLOCK_COLORS["@"]
-            self.block_symbols
-        elif bloque == "%":
-            self.blocks
-            self.block_colors == self.BLOCK_COLORS["%"]   # No esta bien ninguno
-            self.block_symbols
-        elif bloque == ".":
-            self.blocks
-            self.block_colors == self.BLOCK_COLORS["."]
-            self.block_symbols
-        else:
-            ValueError("Se ha encontrado un bloque no definido")    
-    
     # - Usa `self.calcular_posicion_bloque` y rellena las listas paralelas.
-    
+    raise NotImplementedError
 
 @arkanoid_method
 def procesar_input(self) -> None:
@@ -123,7 +82,6 @@ def main() -> None:
 
     game = ArkanoidGame(args.level)
     game.run()
-    
 
 
 if __name__ == "__main__":
