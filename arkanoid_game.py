@@ -41,36 +41,25 @@ def preparar_entidades(self) -> None:
 def crear_bloques(self) -> None:    #YOOOOOYOOOOO
     """Genera los rectángulos de los bloques en base a la cuadrícula."""
     # - Limpia `self.blocks`, `self.block_colors` y `self.block_symbols`.
-    self.blocks.clear(), self.block_colors.clear(), self.block_symbols.clear()
+    self.blocks.clear()
+    self.block_colors.clear()
+    self.block_symbols.clear()
     # - Recorre `self.layout` para detectar símbolos de bloque.
-    fila = 0
-    for linea in self.layout:
-        columna, caracter = ""
-        fila += 1
-        for posicion, caracter in enumerate(linea, start=1):
-            columna = posicion
-            caracter = caracter
-        self.calcular_posicion_bloque(self)
-        if bloque == "#":
+    bloque_simbolos = self.BLOCK_COLORS.keys()   # Definimos el conjunto de símbolos que representan un bloque (claves del diccionario de colores)
+    caracteres_validos = bloque_simbolos | {"."}
+    for fila, conjunto_caracter in enumerate(self.layout, start=1):
+        for columna, caracter in enumerate(conjunto_caracter, start=1): 
+            if caracter not in caracteres_validos:
+                raise ValueError(f"Carácter '{caracter}' no definido en el archivo de nivel.")
             
-            self.blocks
-            self.block_colors = self.BLOCK_COLORS["@"]
-            self.block_symbols
-        elif bloque == "@":
-            self.blocks
-            self.block_colors == self.BLOCK_COLORS["@"]
-            self.block_symbols
-        elif bloque == "%":
-            self.blocks
-            self.block_colors == self.BLOCK_COLORS["%"]   # No esta bien ninguno
-            self.block_symbols
-        elif bloque == ".":
-            self.blocks
-            self.block_colors == self.BLOCK_COLORS["."]
-            self.block_symbols
-        else:
-            ValueError("Se ha encontrado un bloque no definido")    
-    
+            if caracter == ".":
+                continue
+            
+            if caracter in bloque_simbolos:
+                rectangulo = self.calcular_posicion_bloque(fila, columna)  
+                self.blocks.append(rectangulo) 
+                self.block_colors.append(self.BLOCK_COLORS[caracter])
+                self.block_symbols.append(caracter)
     # - Usa `self.calcular_posicion_bloque` y rellena las listas paralelas.
     
 
