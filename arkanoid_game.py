@@ -4,29 +4,34 @@ Completa los métodos marcados con TODO respetando las anotaciones de tipo y la
 estructura de la clase. El objetivo es construir un prototipo jugable usando
 pygame que cargue bloques desde un fichero de nivel basado en caracteres.
 """
-from arkanoid_core import *
+from arkanoid_core import ArkanoidGame, arkanoid_method, pygame, Vector2
 # --------------------------------------------------------------------- #
 # Métodos a completar por el alumnado
 # --------------------------------------------------------------------- #
 
-#@arkanoid_method
-def cargar_nivel(self) -> list[str]:    #YOOOOOYOOOOO
+@arkanoid_method
+def cargar_nivel(self) -> list[str]:
     """Lee el fichero de nivel y devuelve la cuadrícula como lista de filas."""
     ruta_fichero_nivel = self.level_path
 
     if not ruta_fichero_nivel.is_file():
         mensaje = f"No se encuentra el archivo: {ruta_fichero_nivel}"
-        print(mensaje)         # - Comprueba que `self.level_path` existe y es fichero.
+        print(mensaje)  # Comprueba que `self.level_path` existe y es fichero.
     with ruta_fichero_nivel.open("r", encoding="utf-8") as f:
-       texto_entero = f.read()   #Lee todo el contenido del archivo como una sola cadena y luego la divide
-       lineas = [linea.strip() for linea in texto_entero.splitlines() if linea.strip()]    #Obtiene las lineas sin espacios y separados por l
-       longitudes = [len(linea) for linea in lineas]    # Comprueba el ancho de las lineas
+       texto_entero = f.read()  # Lee todo el contenido del archivo como una sola cadena 
+                                # y luego la divide
+       lineas = [
+           linea.strip() 
+           for linea in texto_entero.splitlines() 
+           if linea.strip()
+       ]  #Obtiene las lineas sin espacios y separados por l
+       longitudes = [len(linea) for linea in lineas]  # Comprueba el ancho de las lineas
        if len(set(longitudes)) > 1:   
            raise ValueError("Las filas del nivel no tienen el mismo ancho")  
-    # - Lee su contenido, filtra líneas vacías y valida que todas tienen el mismo ancho.
+    # Lee su contenido, filtra líneas vacías y valida que todas tienen el mismo ancho.
     self.layout = lineas
     return self.layout
-    # - Guarda el resultado en `self.layout` y devuélvelo.
+    # Guarda el resultado en `self.layout` y devuélvelo.
    
 
 @arkanoid_method
@@ -38,19 +43,22 @@ def preparar_entidades(self) -> None:
     raise NotImplementedError
 
 @arkanoid_method
-def crear_bloques(self) -> None:    #YOOOOOYOOOOO
+def crear_bloques(self) -> None:
     """Genera los rectángulos de los bloques en base a la cuadrícula."""
-    # - Limpia `self.blocks`, `self.block_colors` y `self.block_symbols`.
+    # Limpia `self.blocks`, `self.block_colors` y `self.block_symbols`.
     self.blocks.clear()
     self.block_colors.clear()
     self.block_symbols.clear()
-    # - Recorre `self.layout` para detectar símbolos de bloque.
-    bloque_simbolos = self.BLOCK_COLORS.keys()   # Definimos el conjunto de símbolos que representan un bloque (claves del diccionario de colores)
+    # Recorre `self.layout` para detectar símbolos de bloque.
+    bloque_simbolos = self.BLOCK_COLORS.keys()  # Símbolos que representan bloques
     caracteres_validos = bloque_simbolos | {"."}
     for fila, conjunto_caracter in enumerate(self.layout, start=1):
         for columna, caracter in enumerate(conjunto_caracter, start=1): 
             if caracter not in caracteres_validos:
-                raise ValueError(f"Carácter '{caracter}' no definido en el archivo de nivel.")
+                raise ValueError(
+                    f"Carácter '{caracter}' no definido "
+                    "en el archivo de nivel."
+                )
             
             if caracter == ".":
                 continue
@@ -60,7 +68,7 @@ def crear_bloques(self) -> None:    #YOOOOOYOOOOO
                 self.blocks.append(rectangulo) 
                 self.block_colors.append(self.BLOCK_COLORS[caracter])
                 self.block_symbols.append(caracter)
-    # - Usa `self.calcular_posicion_bloque` y rellena las listas paralelas.
+    # Usa `self.calcular_posicion_bloque` y rellena las listas paralelas.
     
 
 @arkanoid_method
@@ -74,11 +82,11 @@ def procesar_input(self) -> None:
 @arkanoid_method
 def actualizar_bola(self) -> None:
     """Actualiza la posición de la bola y gestiona colisiones."""
-    # - Mueve la bola según su velocidad.
+    # Mueve la bola según su velocidad.
     self.ball_pos += self.ball_velocity
     ball_rect = self.obtener_rect_bola()
 
-    # - Comprueba colisiones con paredes, paleta y bloques.
+    # Comprueba colisiones con paredes, paleta y bloques.
     if ball_rect.left <= 0 or ball_rect.right >= self.SCREEN_WIDTH:
         self.ball_velocity.x *= -1
 
@@ -106,18 +114,15 @@ def actualizar_bola(self) -> None:
             nuevos_colores.append(color)
             nuevos_simbolos.append(symbol)
 
-    # - Actualiza velocidad, puntuación y vidas según corresponda.
+    # Actualiza velocidad, puntuación y vidas según corresponda.
     self.blocks = nuevos_bloques
     self.block_colors = nuevos_colores
     self.block_symbols = nuevos_simbolos
 
 @arkanoid_method
 def dibujar_escena(self) -> None:
-     """Renderiza fondo, bloques, paleta, bola y HUD."""
-    # - Rellena el fondo y dibuja cada bloque con `self.dibujar_rectangulo`.
-    # - Pinta la paleta y la bola con las utilidades proporcionadas.
-    # - Muestra puntuación, vidas y mensajes usando `self.dibujar_texto`.
-       # Fondo
+    """Renderiza fondo, bloques, paleta, bola y HUD."""
+    # Fondo
     self.screen.fill(self.BACKGROUND_COLOR)
 
     # Bloques
