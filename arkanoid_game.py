@@ -113,20 +113,62 @@ def actualizar_bola(self) -> None:
 
 @arkanoid_method
 def dibujar_escena(self) -> None:
-    """Renderiza fondo, bloques, paleta, bola y HUD."""
+     """Renderiza fondo, bloques, paleta, bola y HUD."""
     # - Rellena el fondo y dibuja cada bloque con `self.dibujar_rectangulo`.
     # - Pinta la paleta y la bola con las utilidades proporcionadas.
     # - Muestra puntuación, vidas y mensajes usando `self.dibujar_texto`.
-    raise NotImplementedError
+       # Fondo
+    self.screen.fill(self.BACKGROUND_COLOR)
+
+    # Bloques
+    for rect, color in zip(self.blocks, self.block_colors):
+        self.dibujar_rectangulo(rect, color)
+
+    # Paleta
+    self.dibujar_rectangulo(self.paddle, self.PADDLE_COLOR)
+
+    # Bola
+    self.dibujar_circulo(self.ball_pos, self.BALL_RADIUS, self.BALL_COLOR)
+
+    # HUD: puntuación y vidas
+    self.dibujar_texto(f"Puntos: {self.score}", (10, 10))
+    self.dibujar_texto(f"Vidas: {self.lives}", (10, 40))
 
 @arkanoid_method
 def run(self) -> None:
     """Ejecuta el bucle principal del juego."""
-    # - Inicializa recursos (`self.inicializar_pygame`, `self.cargar_nivel`, etc.).
-    # - Procesa eventos de `self.iterar_eventos()` y llama a los métodos de actualización/dibujo.
-    # - Refresca la pantalla con `self.actualizar_pantalla()` y cierra con `self.finalizar_pygame()`.
-    raise NotImplementedError
+    # Inicializar pygame y cargar el nivel
+    self.inicializar_pygame()
+    self.cargar_nivel()
+    self.preparar_entidades()
+    self.crear_bloques()
+    self.running = True
 
+    while self.running:
+        # Procesar eventos
+        for event in self.iterar_eventos():
+            if event.type == self.EVENT_QUIT:
+                self.running = False
+            elif event.type == self.EVENT_KEYDOWN and event.key == self.KEY_ESCAPE:
+                self.running = False
+
+        # Entrada del jugador
+        self.procesar_input()
+
+        # Actualización de la bola y colisiones
+        self.actualizar_bola()
+
+        # Dibujar escena completa
+        self.dibujar_escena()
+
+        # Actualizar pantalla
+        self.actualizar_pantalla()
+
+        # Limitar FPS
+        self.clock.tick(self.FPS)
+
+    # Salida del juego
+    self.finalizar_pygame()
 
 def main() -> None:
     """Permite ejecutar el juego desde la línea de comandos."""
